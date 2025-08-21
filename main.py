@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, File, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.security import OAuth2PasswordBearer
 from .item import Item_in,Item_out
 
@@ -8,7 +8,10 @@ app = FastAPI()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-fake_db = []
+fake_db = [
+    Item_out(id=1, name="Laptop", description="Gaming laptop", price=1200.5),
+    Item_out(id=2, name="Phone", description="Smartphone", price=800.0),
+]
 counter = 0
 
 @app.get("/items/")
@@ -28,3 +31,13 @@ async def create_item(item : Item_in):
     fake_db.append(item_out)
 
     return item_out
+
+
+@app.get("/item/{item_id}")
+async def get_item(item_id : int):
+    for item in fake_db:
+        if item.id == item_id:
+            return item
+
+    raise HTTPException(status_code=404, detail="Item not found")
+    
