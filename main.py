@@ -9,8 +9,8 @@ app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 fake_db = [
-    Item_out(id=1, name="Laptop", description="Gaming laptop", price=1200.5),
-    Item_out(id=2, name="Phone", description="Smartphone", price=800.0),
+    Item_out(id=1, title="Laptop", description="Gaming laptop", price=1200.5),
+    Item_out(id=2, title="Phone", description="Smartphone", price=800.0),
 ]
 counter = 0
 
@@ -33,7 +33,7 @@ async def create_item(item : Item_in):
     return item_out
 
 
-@app.get("/item/{item_id}")
+@app.get("/item/{item_id}",response_model=Item_out)
 async def get_item(item_id : int):
     for item in fake_db:
         if item.id == item_id:
